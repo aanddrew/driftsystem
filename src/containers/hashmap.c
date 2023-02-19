@@ -2,6 +2,10 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

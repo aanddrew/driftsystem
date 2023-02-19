@@ -6,47 +6,46 @@
 
 #include <containers/hashmap.h>
 
-typedef struct Entity {
+typedef struct entity {
     entity_t id;
     bool is_alive;
-} Entity;
-
-Entity* entities = NULL;
-size_t* entity_map;
-
-size_t size_entities = 0;
-const size_t starting_size = 32;
-
+} entity;
 entity_t next_entity_id = 1;
 
-entity_t Entity_create() {
-    if (entities == NULL) {
-        entities = malloc(sizeof(Entity) * starting_size);
-        entity_map = malloc(sizeof(size_t) * starting_size);
+struct hashmap* entity_map = NULL;
+
+//for hashmap
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+int entity_compare(const void* a, const void* b, void* udata) {
+    return ((entity*) a)->id == ((entity*) b)->id;
+}
+uint64_t entity_hash(const void* item, uint64_t seed0, uint64_t seed1) {
+    return hashmap_sip(&((entity*) item)->id, sizeof(entity_t), seed0, seed1);
+}
+
+entity_t entity_create() {
+    if (entity_map == NULL) {
+        entity_map = hashmap_new(sizeof(entity), 0, 0, 0, entity_hash, entity_compare, NULL, NULL);
     }
-    for (size_t i = 0; i < size_entities; i++) {
-        if (!entities[i].is_alive) {
-            entities[i].id = next_entity_id;
-            next_entity_id++;
 
-            entities[i].is_alive = true;
+    entity new = (entity) {
+        .id = next_entity_id,
+        .is_alive = true
+    };
+    next_entity_id++;
 
-            entity_map[entities[i].id] = i;
-            return entities[i].id;
-        }
-    }
-
-    return 0;
+    hashmap_set(entity_map, &new);
+    return new.id;
 }
 
-Entity* _Entity_get(entity_t id) {
-    return &entities[entity_map[id]];
+entity* _entity_get(entity_t id) {
+    return hashmap_get(entity_map, &(entity){ .id=id });
 }
 
-bool Entity_is_alive(entity_t id) {
-    return _Entity_get(id)->is_alive;
+bool entity_is_alive(entity_t id) {
+    return _entity_get(id)->is_alive;
 }
 
-void Entity_destroy(entity_t id) {
-    _Entity_get(id)->is_alive = false;
+void entity_destroy(entity_t id) {
+    _entity_get(id)->is_alive = false;
 }

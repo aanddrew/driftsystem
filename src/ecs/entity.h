@@ -6,8 +6,8 @@
 
 typedef uint32_t entity_t;
 
-entity_t Entity_create();
-bool Entity_is_alive(entity_t id);
-void Entity_destroy(entity_t id);
+entity_t entity_create();
+bool entity_is_alive(entity_t id);
+void entity_destroy(entity_t id);
 
 #endif

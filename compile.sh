@@ -1,5 +1,6 @@
 #!/bin/bash
-gcc -Wall -Wextra -Wpedantic \
+gcc -Wall -Wextra -Wpedantic -Wformat \
+	-g \
 	--std=c99 \
 	-Isrc \
 	$(find . | grep -e '.*\.c$') \

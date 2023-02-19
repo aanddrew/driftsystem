@@ -3,9 +3,19 @@
 #include <stdbool.h>
 
 #include <ecs/entity.h>
+#include <ecs/component.h>
+
+#include <client/gui/graphics/window.h>
 
 int main() {
-    uint32_t handle = Entity_create();
+    components_init();
+
+    entity_t handle = window_create();
+    printf("%d\n", handle);
+
+    SDL_Delay(100);
+    window_destroy();
+    components_cleanup();
     return 0;
 }
 

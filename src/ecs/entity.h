@@ -4,14 +4,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct Entity {
-    uint32_t id;
-    char* name;
-    bool is_alive;
-} Entity;
+typedef uint32_t entity_t;
 
-uint32_t Entity_create();
-uint32_t Entity_create_named(const char* name);
-Entity* Entity_get(uint32_t id);
+entity_t Entity_create();
+bool Entity_is_alive(entity_t id);
+void Entity_destroy(entity_t id);
 
 #endif

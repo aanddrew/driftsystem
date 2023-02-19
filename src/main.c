@@ -2,6 +2,14 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
+#include <ecs/entity.h>
+
+int main() {
+    uint32_t handle = Entity_create();
+    return 0;
+}
+
+/*
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Could not init SDL: %s\n", SDL_GetError());
@@ -34,4 +42,4 @@ int main() {
 
     SDL_Quit();
     return 0;
-}
+}*/

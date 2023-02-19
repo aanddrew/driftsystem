@@ -1,8 +1,12 @@
 #ifndef VEC4_H
 #define VEC4_H
 
-struct Vec4;
-typedef struct Vec4 Vec4;
+typedef struct Vec4 {
+    float x;
+    float y;
+    float z;
+    float w;
+} Vec4;
 
 float Vec4_dot(Vec4 a, Vec4 b);
 float Vec4_length(Vec4 a);

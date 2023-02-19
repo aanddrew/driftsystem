@@ -2,13 +2,6 @@
 
 #include <math.h>
 
-struct Vec4 {
-    float x;
-    float y;
-    float z;
-    float w;
-};
-
 float Vec4_dot(Vec4 a, Vec4 b) {
     return (a.x * b.x)
         +  (a.y * b.y)

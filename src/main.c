@@ -7,7 +7,12 @@
 
 #include <client/graphics/window.h>
 
-int main() {
+#define GLEW_STATIC
+
+int main(int argc, char* argv[]) {
+    (void)(argc);
+    (void)(argv);
+
     components_init();
 
     window_create();

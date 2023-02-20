@@ -3,9 +3,9 @@
 #include <ecs/component.h>
 #include <containers/hashmap.h>
 #include <GL/glew.h>
-#include <GL/glu.h>
 #include <SDL2/SDL_opengl.h>
 
+#include <stdio.h>
 
 void window_component_init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {

@@ -19,7 +19,7 @@ typedef struct System {
 } System;
 
 #include <game/systems/logging.h>
-#include <client/gui/graphics/systems/window_system.h>
+#include <client/graphics/systems/window_system.h>
 
 System systems[NUM_SYSTEMS] = {
     [LOGGING_SYSTEM] = {

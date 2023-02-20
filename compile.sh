@@ -6,4 +6,7 @@ gcc -Wall -Wextra -Wpedantic -Wformat \
 	$(find . | grep -e '.*\.c$') \
 	-o drift \
 	-lm \
-	-lSDL2 
+	-lSDL2 \
+	-lGLEW \
+	-lGL
+

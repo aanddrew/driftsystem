@@ -7,10 +7,12 @@
 typedef void* (*ComponentCreateFunc)(entity_t, void*);
 typedef void (*ComponentDestroyFunc)(entity_t, void*);
 typedef void (*ComponentInitFunc)();
+typedef void (*ComponentCleanupFunc)();
 
 typedef enum {
     COMPONENT_NONE,
     COMPONENT_WINDOW,
+    COMPONENT_SHADER,
     COMPONENT_MODEL,
     COMPONENT_POSITION,
     COMPONENT_VELOCITY,

@@ -5,24 +5,35 @@
 typedef struct {
     component_t id;
     ComponentInitFunc init_func;
+    ComponentCleanupFunc cleanup_func;
     ComponentCreateFunc create_func;
     ComponentDestroyFunc destroy_func;
 } component_store;
 
-#include <client/gui/graphics/components/window_component.h>
+#include <client/graphics/components/window_component.h>
+#include <client/graphics/components/shader_component.h>
 
 component_store components[NUM_COMPONENTS] = {
     [COMPONENT_NONE] = {
         .id = COMPONENT_NONE,
         .init_func = NULL,
+        .cleanup_func = NULL,
         .create_func = NULL,
         .destroy_func = NULL
     },
     [COMPONENT_WINDOW] = {
         .id = COMPONENT_WINDOW,
         .init_func = window_component_init,
+        .cleanup_func = window_component_cleanup,
         .create_func = window_component_create,
         .destroy_func = window_component_destroy,
+    },
+    [COMPONENT_SHADER] = {
+        .id = COMPONENT_SHADER,
+        .init_func = shader_component_init,
+        .cleanup_func = shader_component_cleanup,
+        .create_func = shader_component_create,
+        .destroy_func = shader_component_destroy,
     }
 };
 typedef struct {
@@ -74,6 +85,11 @@ void components_init() {
 void components_cleanup() {
     hashmap_free(entity_component_map);
     entity_component_map = NULL;
+    for (size_t i = 0; i < NUM_COMPONENTS; i++) {
+        if (components[i].cleanup_func != NULL) {
+            components[i].cleanup_func();
+        }
+    }
 }
 
 entity_components* get_components(entity_t entity) {

@@ -5,7 +5,7 @@
 #include <ecs/entity.h>
 #include <ecs/component.h>
 
-#include <client/gui/graphics/window.h>
+#include <client/graphics/window.h>
 
 int main() {
     components_init();

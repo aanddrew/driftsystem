@@ -10,10 +10,21 @@
 int main() {
     components_init();
 
-    entity_t handle = window_create();
-    printf("%d\n", handle);
+    window_create();
 
-    SDL_Delay(100);
+    bool running = true;
+    while (running) {
+        SDL_Event event;
+        while(SDL_PollEvent(&event)) {
+            switch(event.type) {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+            }
+        }
+        //render
+    }
+
     window_destroy();
     components_cleanup();
     return 0;
@@ -32,19 +43,7 @@ int main() {
         exit(1);
     }
 
-    bool running = true;
-    while (running) {
-        SDL_Event event;
-        while(SDL_PollEvent(&event)) {
-            switch(event.type) {
-                case SDL_QUIT:
-                    running = false;
-                    break;
-            }
-        }
 
-        //render
-    }
 
     SDL_Delay(100);
     SDL_DestroyWindow(window);

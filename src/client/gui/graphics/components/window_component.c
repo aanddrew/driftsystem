@@ -24,7 +24,7 @@ void* window_component_create(entity_t entity, void* data) {
     }
     component->window = window;
 
-    return window;
+    return component;
 }
 
 window_component* window_component_get(entity_t entity) {

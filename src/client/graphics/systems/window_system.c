@@ -16,7 +16,6 @@ void window_graphics_process(float delta) {
     if (entities == NULL) {
         return;
     }
-    printf("Found a window entity!\n");
 }
 
 void window_physics_process(float delta) {

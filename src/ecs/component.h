@@ -29,8 +29,8 @@ typedef uint32_t COMPONENT_BITS_TYPE;
 #define component_bits(name) COMPONENT_BITS_TYPE name[COMPONENT_BITS_LENGTH]
 #define component_bits_zero(bits) for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) { bits[i] = 0; }
 #define component_bits_copy(src, dest) for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) { dest[i] = src[i]; }
-#define component_bits_set(array, i, value) array[i / sizeof(COMPONENT_BITS_TYPE)] &= 0x1 >> value
-#define component_bits_get(array, i) (bool) (array[i / sizeof(COMPONENT_BITS_TYPE)] << (i % sizeof(COMPONENT_BITS_TYPE)) & 0x1)
+#define component_bits_set(array, component, value) array[component / sizeof(COMPONENT_BITS_TYPE)] |= !!(value) << (component % sizeof(COMPONENT_BITS_TYPE))
+#define component_bits_get(array, i) (bool) (array[i / sizeof(COMPONENT_BITS_TYPE)] >> (i % sizeof(COMPONENT_BITS_TYPE)) & 0x1)
 
 void components_init();
 void components_cleanup();

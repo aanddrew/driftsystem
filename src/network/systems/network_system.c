@@ -61,7 +61,6 @@ void network_physics_process(float delta) {
 
 void network_graphics_process(float delta) { 
     (void)(delta);
-    return;
 
     component_bits(query);
     component_bits_zero(query);

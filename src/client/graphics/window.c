@@ -2,11 +2,15 @@
 
 #include <ecs/component.h>
 
+#include <stdio.h>
+
 entity_t window;
 
 entity_t window_create() {
     entity_t window = entity_create();
+
     component_add(window, COMPONENT_WINDOW, NULL);
+
     return window;
 }
 

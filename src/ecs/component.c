@@ -51,6 +51,38 @@ typedef struct {
     void* component_data[NUM_COMPONENTS];
 } entity_components;
 
+typedef struct {
+    component_bits(query);
+    cvector_vector_type(entity_t) vector;
+} query_result;
+
+int query_compare(const void* a, const void* b, void* udata) {
+    (void)(udata);
+    for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) {
+        if (((query_result*) a)->query[i] != ((query_result*) b)->query[i]) {
+            return 1;
+        }
+    }
+    return 0;
+}
+uint64_t query_hash(const void* item, uint64_t seed0, uint64_t seed1) {
+    return hashmap_sip(&((query_result*) item)->query, COMPONENT_BITS_SIZE, seed0, seed1);
+}
+
+void query_free(void* data) {
+    query_result* query = (query_result*) data;
+    cvector_free(query->vector);
+}
+
+//for hashmap
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+int entity_component_compare(const void* a, const void* b, void* udata) {
+    return ((entity_components*) a)->entity == ((entity_components*) b)->entity ? 0 : 1;
+}
+uint64_t entity_component_hash(const void* item, uint64_t seed0, uint64_t seed1) {
+    return hashmap_sip(&((entity_components*) item)->entity, sizeof(entity_components), seed0, seed1);
+}
+
 void entity_components_free(void* data) {
     entity_components* ec = (entity_components*) data;
     for (size_t i = 0; i < NUM_COMPONENTS; i++) {
@@ -61,16 +93,7 @@ void entity_components_free(void* data) {
 }
 
 struct hashmap* entity_component_map = NULL;
-struct hashmap* query_cache;
-
-//for hashmap
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-int entity_component_compare(const void* a, const void* b, void* udata) {
-    return ((entity_components*) a)->entity == ((entity_components*) b)->entity;
-}
-uint64_t entity_component_hash(const void* item, uint64_t seed0, uint64_t seed1) {
-    return hashmap_sip(&((entity_components*) item)->entity, sizeof(entity_components), seed0, seed1);
-}
+struct hashmap* query_cache = NULL;
 
 void components_init() {
     for (size_t i = 0; i < NUM_COMPONENTS; i++) {
@@ -90,6 +113,18 @@ void components_init() {
             entity_components_free, 
             NULL);
     }
+
+    if (query_cache == NULL) {
+        query_cache = hashmap_new(
+            sizeof(query_result), 
+            0, 
+            0, 
+            0, 
+            query_hash, 
+            query_compare, 
+            query_free, 
+            NULL);
+    }
 }
 
 void components_cleanup() {
@@ -106,11 +141,15 @@ void components_cleanup() {
 entity_components* get_components(entity_t entity) {
     entity_components* ec = hashmap_get(entity_component_map, &(entity_components){.entity = entity});
     if (ec == NULL) {
-        ec = (entity_components*) malloc(sizeof(entity_components));
+        entity_components temp = { .entity = entity };
+        component_bits_zero(temp.bits);
+
         for (size_t i = 0; i < NUM_COMPONENTS; i++) {
-            component_bits_set(ec->bits, i, 0);
-            ec->component_data[i] = NULL;
+            temp.component_data[i] = NULL;
         }
+        hashmap_set(entity_component_map, &temp);
+
+        return hashmap_get(entity_component_map, &temp);
     }
     return ec;
 }
@@ -147,32 +186,6 @@ void component_list(entity_t entity, component_bits(out)) {
     }
 }
 
-
-typedef struct {
-    component_bits(query);
-    cvector_vector_type(entity_t) vector;
-} query_result;
-
-struct hashmap* query_cache = NULL;
-
-int query_compare(const void* a, const void* b, void* udata) {
-    (void)(udata);
-    for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) {
-        if (((query_result*) a)->query[i] != ((query_result*) b)->query[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-uint64_t query_hash(const void* item, uint64_t seed0, uint64_t seed1) {
-    return hashmap_sip(&((query_result*) item)->query, COMPONENT_BITS_SIZE, seed0, seed1);
-}
-
-void query_free(void* data) {
-    query_result* query = (query_result*) data;
-    cvector_free(query->vector);
-}
-
 bool entity_query_iter(const void* item, void* udata) {
     entity_components* ec = (entity_components*) item;
     query_result* result = (query_result*) udata;
@@ -189,18 +202,6 @@ bool entity_query_iter(const void* item, void* udata) {
 }
 
 entity_t* component_query(component_bits(query)) {
-    if (query_cache == NULL) {
-        query_cache = hashmap_new(
-            sizeof(query_result), 
-            0, 
-            0, 
-            0, 
-            query_hash, 
-            query_compare, 
-            query_free, 
-            NULL);
-    }
-
     query_result result = {
        .vector = NULL,
     };
@@ -212,7 +213,7 @@ entity_t* component_query(component_bits(query)) {
         return found_result->vector;
     }
 
-    hashmap_scan(entity_component_map, entity_query_iter, query);
+    hashmap_scan(entity_component_map, entity_query_iter, &result);
 
     hashmap_set(query_cache, &result);
 

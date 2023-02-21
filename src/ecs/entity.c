@@ -17,7 +17,7 @@ struct hashmap* entity_map = NULL;
 //for hashmap
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int entity_compare(const void* a, const void* b, void* udata) {
-    return ((entity*) a)->id == ((entity*) b)->id;
+    return ((entity*) a)->id == ((entity*) b)->id ? 0 : 1;
 }
 uint64_t entity_hash(const void* item, uint64_t seed0, uint64_t seed1) {
     return hashmap_sip(&((entity*) item)->id, sizeof(entity_t), seed0, seed1);
@@ -32,7 +32,7 @@ entity_t entity_create() {
         .id = next_entity_id,
         .is_alive = true
     };
-    next_entity_id++;
+    next_entity_id += 1;
 
     hashmap_set(entity_map, &new);
     return new.id;

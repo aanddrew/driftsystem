@@ -1,24 +1,43 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include <string.h>
+#include <time.h>
 
 #include <ecs/entity.h>
 #include <ecs/component.h>
+#include <ecs/system.h>
 
 #include <client/graphics/window.h>
+#include <server/server.h>
 
-#define GLEW_STATIC
+#include <network/systems/network_system.h>
+
+#include <GL/glew.h>
+
+const float PHYSICS_DELTA = (1.0f / 64.0);
 
 int main(int argc, char* argv[]) {
-    (void)(argc);
-    (void)(argv);
+    for (int i = 1; i < argc; i++) {
+        if (!strcmp(argv[i], "--server")) {
+            return servermain(argc, argv);
+        }
+        else if (!strcmp(argv[i], "--client")) {
+            network_start_client("localhost");
+        }
+    }
 
     components_init();
 
     window_create();
 
     bool running = true;
+    clock_t then = clock();
+    float physics_time_accumulated = 0.0f;
+
     while (running) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         SDL_Event event;
         while(SDL_PollEvent(&event)) {
             switch(event.type) {
@@ -27,33 +46,22 @@ int main(int argc, char* argv[]) {
                     break;
             }
         }
-        //render
+        //per frame processing
+        clock_t now = clock();
+        float dt = ((float) now - then)/CLOCKS_PER_SEC;
+        systems_all_graphics_process(dt);
+
+        //fixed delta processing
+        physics_time_accumulated += dt;
+        while (physics_time_accumulated > PHYSICS_DELTA) {
+            systems_all_physics_process(PHYSICS_DELTA);
+            physics_time_accumulated -= PHYSICS_DELTA;
+        }
+
+        then = clock();
     }
 
     window_destroy();
     components_cleanup();
     return 0;
 }
-
-/*
-int main() {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Could not init SDL: %s\n", SDL_GetError());
-        exit(1);
-    }
-
-    SDL_Window* window = SDL_CreateWindow("driftsystem", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-    if (!window) {
-        printf("Failed to open window: %s\n", SDL_GetError());
-        exit(1);
-    }
-
-
-
-    SDL_Delay(100);
-    SDL_DestroyWindow(window);
-    window = NULL;
-
-    SDL_Quit();
-    return 0;
-}*/

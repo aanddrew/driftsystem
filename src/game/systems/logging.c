@@ -10,7 +10,6 @@ void logging_physics_process(float delta) {
     (void)(delta);
 }
 
-
 void logging_log(const char* string) {
     printf("%s", string);
 }

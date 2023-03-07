@@ -1,6 +1,7 @@
 #include "shader_component.h"
 
 #include <ecs/component.h>
+#include <game/systems/logging.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +30,7 @@ void file_to_string(const char* filename, char** buffer, size_t* length) {
         fclose(file);
     }
     else {
-        printf("Could not read file '%s'\n", filename);
+        LOG("Could not read file '%s'\n", filename);
         exit(1);
     }
 }

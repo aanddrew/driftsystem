@@ -12,6 +12,7 @@
 #include <server/server.h>
 
 #include <network/systems/network_system.h>
+#include <game/systems/logging.h>
 
 #include <GL/glew.h>
 

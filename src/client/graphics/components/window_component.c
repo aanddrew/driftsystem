@@ -1,7 +1,9 @@
 #include "window_component.h"
 
 #include <ecs/component.h>
+#include <game/systems/logging.h>
 #include <containers/hashmap.h>
+
 #include <GL/glew.h>
 #include <SDL2/SDL_opengl.h>
 
@@ -9,7 +11,7 @@
 
 void window_component_init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Could not init SDL: %s\n", SDL_GetError());
+        LOG_ERROR("Could not init SDL: %s\n", SDL_GetError());
         exit(1);
     }
 }
@@ -22,7 +24,7 @@ void* window_component_create(entity_t entity, void* data) {
 
     SDL_Window* window = SDL_CreateWindow("driftsystem", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (!window) {
-        printf("Failed to open window: %s\n", SDL_GetError());
+        LOG_ERROR("Failed to open window: %s\n", SDL_GetError());
         exit(1);
     }
     component->window = window;
@@ -32,13 +34,13 @@ void* window_component_create(entity_t entity, void* data) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GLContext context = SDL_GL_CreateContext(window);
     if (context == NULL) {
-        printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
+        LOG_ERROR("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
         exit(1);
     }
     glewExperimental = true;
     GLenum glew_error = glewInit();
     if (glew_error != GLEW_OK) {
-        printf("Error initializing GLEW! %s\n", glewGetErrorString(glew_error));
+        LOG_ERROR("Error initializing GLEW! %s\n", glewGetErrorString(glew_error));
         exit(1);
     }
 

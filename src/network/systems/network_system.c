@@ -1,4 +1,5 @@
 #include "network_system.h"
+#include <game/systems/logging.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,12 +30,14 @@ void network_start_server() {
 }
 
 void network_start_client(const char* connection) {
+    LOG("Starting client\n");
+
     tcp = socket(AF_INET, SOCK_DGRAM, 0);
     udp = socket(AF_INET, SOCK_DGRAM, 0);
     //udp = socket(AF_N, SOCK_DGRAM, IPPROTO_UDP);
 
     if (tcp < 0 || udp < 0) {
-        printf("Could not create client sockets %s!\n", strerror(errno));
+        LOG_ERROR("Could not create client sockets %s!\n", strerror(errno));
         exit(1);
     }
 
@@ -44,15 +47,15 @@ void network_start_client(const char* connection) {
     server_address.sin_addr.s_addr = inet_addr(connection);
 
     if(bind(tcp, (struct sockaddr*)&server_address, sizeof(server_address)) < 0){
-        printf("Couldn't bind tcp socket!\n");
+        LOG_ERROR("Couldn't bind tcp socket!\n");
         exit(1);
     }
     server_address.sin_port = htons(SERVER_PORT + 1);
     if(bind(udp, (struct sockaddr*)&server_address, sizeof(server_address)) < 0){
-        printf("Couldn't bind udp socket!\n");
+        LOG_ERROR("Couldn't bind udp socket!\n");
         exit(1);
     }
-    printf("Created client!\n");
+    LOG("Created client!\n");
 }
 
 void network_physics_process(float delta) {
@@ -74,6 +77,6 @@ void network_graphics_process(float delta) {
     size_t num_entities = 0;//cvector_size(entities);
 
     for (size_t i = 0; i < num_entities; i++) {
-        printf("%d is a network entity!\n", entities[i]);
+        LOG("%d is a network entity!\n", entities[i]);
     }
 }

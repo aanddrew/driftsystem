@@ -3,6 +3,27 @@
 #include <containers/hashmap.h>
 #include <containers/cvector.h>
 
+inline void component_bits_zero(component_bits(bits)) {
+    for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) { 
+        bits[i] = 0; 
+    }
+}
+
+inline void component_bits_set(component_bits(array), uint32_t component, bool value) {
+    array[component / sizeof(COMPONENT_BITS_TYPE)] |= (!!value) << (component % sizeof(COMPONENT_BITS_TYPE));
+}
+
+inline void component_bits_copy(component_bits(src), component_bits(dest)) {
+    for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) { 
+        dest[i] = src[i]; 
+    }
+}
+
+inline bool component_bits_get(component_bits(array), uint32_t i) {
+    return array[i / sizeof(COMPONENT_BITS_TYPE)] >> (i % sizeof(COMPONENT_BITS_TYPE)) & 0x1;
+}
+
+
 typedef struct {
     component_t id;
     ComponentInitFunc init_func;
@@ -66,7 +87,7 @@ int query_compare(const void* a, const void* b, void* udata) {
     return 0;
 }
 uint64_t query_hash(const void* item, uint64_t seed0, uint64_t seed1) {
-    return hashmap_sip(&((query_result*) item)->query, COMPONENT_BITS_SIZE, seed0, seed1);
+    return hashmap_sip(&((query_result*) item)->query, sizeof(component_bits), seed0, seed1);
 }
 
 void query_free(void* data) {

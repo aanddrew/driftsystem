@@ -23,14 +23,14 @@ typedef enum {
 } component_t;
 
 //bit array - one bit per component - one array per entity
-typedef uint32_t COMPONENT_BITS_TYPE;
+typedef uint64_t COMPONENT_BITS_TYPE;
 #define COMPONENT_BITS_LENGTH NUM_COMPONENTS / sizeof(COMPONENT_BITS_TYPE) + 1
-#define COMPONENT_BITS_SIZE   NUM_COMPONENTS * sizeof(COMPONENT_BITS_TYPE)
-#define component_bits(name) COMPONENT_BITS_TYPE name[COMPONENT_BITS_LENGTH]
-#define component_bits_zero(bits) for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) { bits[i] = 0; }
-#define component_bits_copy(src, dest) for (size_t i = 0; i < COMPONENT_BITS_LENGTH; i++) { dest[i] = src[i]; }
-#define component_bits_set(array, component, value) array[component / sizeof(COMPONENT_BITS_TYPE)] |= !!(value) << (component % sizeof(COMPONENT_BITS_TYPE))
-#define component_bits_get(array, i) (bool) (array[i / sizeof(COMPONENT_BITS_TYPE)] >> (i % sizeof(COMPONENT_BITS_TYPE)) & 0x1)
+typedef COMPONENT_BITS_TYPE component_bits[COMPONENT_BITS_LENGTH];
+
+extern void component_bits_zero(component_bits bits);
+extern void component_bits_set(component_bits array, uint32_t component, bool value);
+extern void component_bits_copy(component_bits src, component_bits dest);
+extern bool component_bits_get(component_bits array, uint32_t i);
 
 void components_init();
 void components_cleanup();

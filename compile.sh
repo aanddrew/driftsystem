@@ -3,11 +3,120 @@ gcc -Wall -Wextra -Wpedantic -Wformat \
 	-g \
 	--std=c99 \
 	-Isrc \
-	-Ilib/include \
+	-isystem lib/include \
 	$(find . | grep -e '.*\.c$') \
+	-D DEBUG \
 	-o drift \
 	-lm \
 	-lSDL2 \
 	-lGL \
-	-DGLEW_STATIC
-
+	-DGLEW_STATIC \
+	-Waddress \
+	-Warray-bounds \
+	-Wattributes \
+	-Wbad-function-cast \
+	-Wbool-compare  \
+	-Wbuiltin-macro-redefined \
+	-Wcast-align  \
+	-Wchar-subscripts  \
+	-Wclobbered  \
+	-Wcomment  \
+	-Wcoverage-mismatch  \
+	-Wcpp  \
+	-Wdate-time  \
+	-Wdeprecated  \
+	-Wdeprecated-declarations  \
+	-Wdesignated-init  \
+	-Wdisabled-optimization  \
+	-Wdiscarded-array-qualifiers  \
+	-Wdiscarded-qualifiers  \
+	-Wdiv-by-zero  \
+	-Wempty-body  \
+	-Wendif-labels  \
+	-Wenum-compare  \
+	-Wfloat-equal  \
+	-Wformat-contains-nul  \
+	-Wformat-extra-args  \
+	-Wformat-nonliteral  \
+	-Wformat-security  \
+	-Wformat-signedness  \
+	-Wformat-y2k  \
+	-Wformat-zero-length  \
+	-Wfree-nonheap-object  \
+	-Wignored-qualifiers  \
+	-Wimplicit  \
+	-Wimplicit-function-declaration  \
+	-Wimplicit-int  \
+	-Wincompatible-pointer-types  \
+	-Winit-self  \
+	-Winline  \
+	-Wint-to-pointer-cast  \
+	-Winvalid-memory-model  \
+	-Winvalid-pch  \
+	-Wjump-misses-init  \
+	-Wlogical-not-parentheses  \
+	-Wlogical-op  \
+	-Wmain  \
+	-Wmaybe-uninitialized  \
+	-Wmemset-transposed-args  \
+	-Wmissing-braces  \
+	-Wmissing-field-initializers  \
+	-Wmissing-parameter-type  \
+	-Wmultichar  \
+	-Wnarrowing  \
+	-Wnested-externs  \
+	-Wnonnull  \
+	-Wodr  \
+	-Wopenmp-simd  \
+	-Woverflow  \
+	-Woverlength-strings  \
+	-Woverride-init  \
+	-Wpacked  \
+	-Wpacked-bitfield-compat  \
+	-Wparentheses  \
+	-Wpedantic  \
+	-Wpointer-arith  \
+	-Wpointer-sign  \
+	-Wpointer-to-int-cast  \
+	-Wpragmas  \
+	-Wreturn-local-addr  \
+	-Wreturn-type  \
+	-Wsequence-point  \
+	-Wshift-count-negative  \
+	-Wshift-count-overflow  \
+	-Wsizeof-array-argument  \
+	-Wsizeof-pointer-memaccess  \
+	-Wstack-protector  \
+	-Wsuggest-attribute=const  \
+	-Wsuggest-attribute=noreturn  \
+	-Wsuggest-attribute=pure  \
+	-Wsuggest-final-methods  \
+	-Wsuggest-final-types  \
+	-Wswitch  \
+	-Wswitch-bool  \
+	-Wswitch-enum  \
+	-Wsync-nand  \
+	-Wtrampolines  \
+	-Wtrigraphs  \
+	-Wtype-limits  \
+	-Wundef  \
+	-Wuninitialized  \
+	-Wunknown-pragmas  \
+	-Wunsafe-loop-optimizations  \
+	-Wunused  \
+	-Wunused-but-set-parameter  \
+	-Wunused-but-set-variable  \
+	-Wunused-function  \
+	-Wunused-label  \
+	-Wunused-local-typedefs  \
+	-Wunused-macros  \
+	-Wunused-parameter  \
+	-Wunused-result  \
+	-Wunused-value  \
+	-Wunused-variable  \
+	-Wvarargs  \
+	-Wvariadic-macros  \
+	-Wvector-operation-performance  \
+	-Wvla \
+	-Wvolatile-register-var  \
+	-Wwrite-strings  

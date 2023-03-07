@@ -13,6 +13,7 @@
 
 #include <network/systems/network_system.h>
 #include <game/systems/logging.h>
+#include <client/input/input_system.h>
 
 #include <GL/glew.h>
 
@@ -36,14 +37,22 @@ int main(int argc, char* argv[]) {
     clock_t then = clock();
     float physics_time_accumulated = 0.0f;
 
+    glClearColor(0.1, 0.1, 0.1, 1.0);
     while (running) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        SDL_GL_SwapWindow(window_get());
 
         SDL_Event event;
         while(SDL_PollEvent(&event)) {
             switch(event.type) {
                 case SDL_QUIT:
                     running = false;
+                    break;
+                case SDL_KEYDOWN:
+                    input_keydown(event.key.keysym);
+                    break;
+                case SDL_KEYUP:
+                    input_keyup(event.key.keysym);
                     break;
             }
         }

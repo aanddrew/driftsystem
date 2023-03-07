@@ -4,6 +4,9 @@
 void logging_graphics_process(float delta);
 void logging_physics_process(float delta);
 
+//needed because the macros use string funcs
+#include <string.h>
+
 #ifdef _WIN32
     #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
